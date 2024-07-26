@@ -147,6 +147,13 @@ RUN set -ex; \
 COPY config.inc.php /etc/phpmyadmin/config.inc.php
 RUN chown www-data:www-data -R /etc/phpmyadmin/
 
+# Enable the container to be run as a non-privileged user. For details see
+# https://docs.openshift.com/container-platform/3.7/creating_images/guidelines.html#use-uid
+# See more: https://github.com/phpmyadmin/docker/issues/187#issuecomment-2033079756
+
+RUN chgrp -R 0 /tmp /etc/apache2 /etc/phpmyadmin && \
+    chmod -R g=u /tmp /etc/apache2 /etc/phpmyadmin
+
 # Copy main script
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
